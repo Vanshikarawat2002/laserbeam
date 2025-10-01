@@ -60,7 +60,7 @@ const values=sectorData?.sectorExposure?.map(i=>i.value);
  if(error)
   return <div>Failed ...</div>
 
-  return <div style={{ height: `${sectorData?.sectorExposure?.length * 50}px`, minHeight: "100px" }}>
+  return <div style={{ height: `${sectorData?.sectorExposure?.length * 25}px`, minHeight: "100px" }}>
   <Bar data={data} options={options} />
 </div>
 
