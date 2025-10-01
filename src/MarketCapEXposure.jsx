@@ -1,5 +1,7 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
+import { useExposureQuery } from "./services/api";
+import { useEffect } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -9,21 +11,10 @@ import {
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const data = {
-  labels: [">$10b", "$1b-$10b", "<$300m", "$500m-$1b", "$300m-$500m"],
-  datasets: [
-    {
-      label: "Market Cap Exposure",
-      data: [84, 11, 5, 0, 0],
-      backgroundColor: ["grey", "#dbdee0ff", "#6c757d", "#ffc107", "#dc3545"],
-      borderWidth: 1,
-    },
-  ],
-};
 
 const options = {
   responsive: true,
-     maintainAspectRatio: false,
+     maintainAspectRatio:false,
   plugins: {
     legend: {
       position: "right",
@@ -37,6 +28,31 @@ const options = {
 };
 
 const MarketCapExposure = () => {
+
+  const {data:marketData, error, isLoading} = useExposureQuery();
+  const labels=marketData?.marketCapExposure?.map(i=>i.name);
+  const percentage=marketData?.marketCapExposure?.map(i=>i.value)
+
+  const data = {
+  labels,
+  datasets: [
+    {
+      label: "Market Cap Exposure",
+      data:percentage,
+      backgroundColor: ["grey", "#dbdee0ff", "#6c757d", "#ffc107", "#dc3545"],
+      borderWidth: 1,
+    },
+  ],
+};
+
+
+if(isLoading)
+  return <div>Loading...</div>
+
+if(error)
+  return <div>Failed...</div>
+
+
   return <Doughnut data={data} options={options} />;
 };
 

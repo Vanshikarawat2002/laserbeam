@@ -12,7 +12,7 @@ export const performance =[{
     per:'34.7%'
 }]
 
-export const NetExposure =[{
+export const netExposure =[{
     name:"Gross Long",
     per:"39%"
 },{
