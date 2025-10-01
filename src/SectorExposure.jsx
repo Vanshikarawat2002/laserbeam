@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Bar } from "react-chartjs-2";
+import { useExposureQuery } from "./services/api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,33 +13,9 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title);
 
-const labels = [
-  "INDEX",
-  "TECHNOLOGY",
-  "MATERIALS",
-  "INDUSTRIALS",
-  "METALS",
-  "HEALTH CARE",
-  "COMMUNICATIONS",
-  "CASH",
-];
-
-const values = [-15, 2, 3, 4, 5, 8, 20, 65];
-
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Sector Exposure",
-      data: values,
-      backgroundColor: values.map((v) => (v < 0 ? "red" : "lightgrey")),
-    },
-  ],
-};
-
 const options = {
   indexAxis: "y",
-     maintainAspectRatio: false,
+     maintainAspectRatio:false,
   responsive: true,
   plugins: {
     legend: { display: false },
@@ -50,8 +27,7 @@ const options = {
   },
   scales: {
     x: {
-      min: -20,
-      max: 100,
+   
       ticks: {
         callback: (value) => value + "%",
       },
@@ -60,7 +36,34 @@ const options = {
 };
 
 const SectorExposure = () => {
-  return <Bar data={data} options={options} />;
+
+  const {data:sectorData,error,isLoading} = useExposureQuery();
+
+const labels= sectorData?.sectorExposure?.map(i=>i.name);
+const values=sectorData?.sectorExposure?.map(i=>i.value);
+
+  const data = sectorData?.sectorExposure && {
+  labels:labels,
+  datasets: [
+    {
+      label: "Sector Exposure",
+      data: values,
+      backgroundColor: values.map((v) => (v < 0 ? "red" : "lightgrey")),
+    },
+  ],
+};
+  
+  
+  if(isLoading)
+    return <div>Loading ...</div>
+
+ if(error)
+  return <div>Failed ...</div>
+
+  return <div style={{ height: `${sectorData?.sectorExposure?.length * 50}px`, minHeight: "100px" }}>
+  <Bar data={data} options={options} />
+</div>
+
 };
 
 export default SectorExposure;

@@ -1,3 +1,4 @@
+import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 // const BASE_URL = import.meta.env.VITE_LOGIN_BASEURL;
@@ -26,18 +27,54 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
   reducerPath: "api",
- baseUrl: "https://farsiElectronicNode.visionvivante.in",
+baseQuery:fetchBaseQuery({
+  baseUrl:"http://localhost:3000"
+}),
   endpoints: (builder) => ({
-    adminLogin: builder.mutation({
-      query: (credentials) => ({
-        url: "/admin/login",
-        method: "POST",
-        body: credentials,
+    staticText: builder.query({
+      query: () => ({
+        url: "/text",
+        method: "GET",
       }),
+    }),
+    funds:builder.query({
+     query:()=>({
+      url:'/funds',
+      method:'GET'
+     })
+    }),
+    stats:builder.query({
+      query:()=>({
+        url:"/stats",
+        method:'GET'
+      })
+    }),
+   holdings:builder.query({
+      query:()=>({
+        url:"/holdings",
+        method:'GET'
+      })
+    }),
+    exposure:builder.query({
+      query:()=>({
+        url:"/exposure",
+        method:'GET'
+      })
+    }),
+    performance:builder.query({
+      query:()=>({
+        url:'/performance',
+        method:'GET'
+      })
     })
   })
 });
 
 export const {
-
+useStaticTextQuery,
+useFundsQuery,
+useStatsQuery,
+useHoldingsQuery,
+useExposureQuery,
+usePerformanceQuery,
 } = api;

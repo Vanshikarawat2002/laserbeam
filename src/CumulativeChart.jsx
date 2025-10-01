@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Line } from "react-chartjs-2";
+import { usePerformanceQuery } from "./services/api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,12 +22,26 @@ ChartJS.register(
 );
 
 const CumulativeChart = () => {
+
+  const {data:lineChartData, isLoading ,error }= usePerformanceQuery();
+  const dataSet = lineChartData?.lineChart?.map(i=>i.CumulativeReturn);
+  const dates=lineChartData?.lineChart?.map(i=>{
+    const date= new Date(""+i.Month);
+    const options ={
+      month:'short',
+      year:'2-digit'
+    }
+    console.log("dates ",date.toLocaleDateString('en-US',options))
+     return date.toLocaleDateString('en-US',options);
+ 
+  });
+
   const data = {
-    labels: ["Jun 25", "Jul 25", "Aug 25", "Sep 25"],
+    labels: dates,
     datasets: [
       {
         label: "Cumulative Performance",
-        data: [0, 4.5, 7, 7], 
+        data:dataSet, 
         fill: false,
         borderColor: "#007bff",
         tension: 0.3,
@@ -53,7 +68,6 @@ const CumulativeChart = () => {
     scales: {
       y: {
         beginAtZero: true,
-        max: 8,
         ticks: {
           callback: function (value) {
             return value + "%";
@@ -62,6 +76,7 @@ const CumulativeChart = () => {
       },
     },
   };
+
 
   return    <div style={{ width: "100%", height: "140px" }}>
       <Line data={data} options={options} />

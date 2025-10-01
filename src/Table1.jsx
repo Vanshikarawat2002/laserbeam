@@ -1,6 +1,17 @@
+import { useEffect } from "react";
 import { performance } from "./netperfromance";
+import {usePerformanceQuery} from './services/api';
 
 const Table1 = ()=>{
+
+  const {data ,isLoading , error} = usePerformanceQuery();
+
+  if(isLoading)
+    return <div>Loading...</div>
+ 
+  if(error)
+    return <div>Error... </div>
+
     return (
           <div className=" border border-1 mt-3">
                   <div className="perf-matrix-head">Net Performance</div>
@@ -10,12 +21,12 @@ const Table1 = ()=>{
                         <th className="border border-0 text-start label-performance">
                           NET PERFORMANCE
                         </th>
-                        {performance.map((i, index) => (
+                        {data?.table?.map((i, index) => (
                           <th
                             className="border border-0 text-center label-performance "
                             key={index}
                           >
-                            {i.name}
+                            {i.label}
                           </th>
                         ))}
                       </tr>
@@ -23,12 +34,12 @@ const Table1 = ()=>{
                         <th className="border border-0 text-start label-performance">
                           LASER BEAM FUND
                         </th>
-                        {performance.map((i, index) => (
+                        {data?.table?.map((i, index) => (
                           <td
                             className="border border-0 text-center funds fw-bold"
                             key={index}
                           >
-                            {i.per}
+                            {i.value}%
                           </td>
                         ))}
                       </tr>
